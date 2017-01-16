@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>天气查询</title>
+		<script src="js/artTemplate.js"></script>
+		<script src="js/jquery-3.1.1.js"></script>
+	</head>
+	<body>
+		<input type="text" id="txt" placeholder="请输入城市" />
+		<input type="button" value="查询天气" />
+		<table>
+			
+		</table>
+		<script type="text/template" id="temp">
+			<%for(var i = 0; i < list.length;i++){%>
+				<tr>
+					<td><%=list[i].date%></td>
+					<td><img src="<%=list[i].dayPictureUrl%>"></td>
+					<td><img src="<%=list[i].nightPictureUrl%>"></td>
+					<td><%=list[i].temperature%></td>
+					<td><%=list[i].weather%></td>
+					<td><%=list[i].wind%></td>
+				</tr>
+			<%}%>
+		</script>
+		<script>
+			$("input[type=button]").on("click",function(){
+				var val = $("#txt").val();
+				
+				$.ajax({
+					url:"http://api.map.baidu.com/telematics/v3/weather",
+					type:"get",
+					data:{
+						location:val,
+						output:"json",
+						ak:'6tYzTvGZSOpYB5Oc2YGGOKt8'
+					},
+					dataType:"jsonp",
+					success:function(data){
+						console.log(data)
+						var weatherData = data.results[0].weather_data;
+						var obj = {
+							list:weatherData
+						};
+						var html = template("temp",obj);
+						document.querySelector("table").innerHTML = html;
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
